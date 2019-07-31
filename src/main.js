@@ -9,6 +9,7 @@ import VueAxios from 'vue-axios'
 
 Vue.config.productionTip = false
 Vue.use(ElementUI)
+axios.defaults.baseURL = "http://192.168.1.188:12"//调用端口
 Vue.use(VueAxios, axios)
 
 new Vue({
