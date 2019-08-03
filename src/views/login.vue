@@ -55,6 +55,9 @@ export default {
 		}
 	},
 	methods: {
+		/**
+		 * 登陆
+		 */
 		submitForm(formName) {
 			var that = this;
 			that.logining = true;//登陆状态
@@ -76,9 +79,11 @@ export default {
 				});
 			})
 		},
-		 //判断复选框是否被勾选 勾选则调用配置cookie方法
+		/**
+		 * 判断是否记住密码
+		 */
 		cache(){
-			if (this.checked == true) {
+			if (this.checked == true) {//勾选则调用配置cookie方法
 				console.log("checked == true");
 				let name = Base64.encode(this.ruleForm.name);//加密
 				let password = Base64.encode(this.ruleForm.password);
@@ -90,10 +95,11 @@ export default {
 				//清空Cookie
 				Cookie.removeCookie("name");
 				Cookie.removeCookie("password");
-				
 			}
 		},
-		//重置
+		/**
+		 * 重置
+		 */
 		resetForm(formName) {
 			this.$refs[formName].resetFields();
 		}
