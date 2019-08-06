@@ -13,11 +13,6 @@ export default new Router({
 	base: process.env.BASE_URL,//及路径
   routes: [
 		{
-			path: '/',
-			name:'login',
-			component: Login
-		},
-		{
 			path: '/home',
 			name:'home',
 			component: Home,
@@ -25,6 +20,11 @@ export default new Router({
 				...manageRouter,//...代表展开数组
 				...testRouter
 			]
+		},
+		{
+			path: '/',
+			name:'login',
+			component: Login
 		}
   ]
 })

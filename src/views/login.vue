@@ -61,17 +61,34 @@ export default {
 		submitForm(formName) {
 			var that = this;
 			that.logining = true;//登陆状态
+			const loading = this.$loading({
+					lock: true,
+					text: 'Loading',
+					spinner: 'el-icon-loading',
+					background: 'rgba(0, 0, 0, 0.7)'
+				});
+				setTimeout(() => {
+					loading.close();
+				}, 1000);
 			that.axios.get('/api/OAuth/authenticate',{
 				params:{
 					userMobile: that.ruleForm.name,
 					userPassword: that.ruleForm.password,
 				},
 			}).then((res)=>{
+				//存储令牌信息
+				let token = res.data.token_type +' '+ res.data.access_token
+				sessionStorage.setItem('token',token);//本地存储token
+				//console.log(222)
+				sessionStorage.setItem('userUid',res.data.profile.userUid);//存储serUserTypeId
+				sessionStorage.setItem('userName',res.data.profile.userName);//存储userName
 				that.logining = false;
 				that.$router.push('/home' );
 				that.$message.success("登录成功");
 				that.cache();//调用cache()方法
+				
 			}).catch((err) => {
+				console.log(333)
 				that.logining = false;
 				that.$message({
 					message: '账户密码错误',
