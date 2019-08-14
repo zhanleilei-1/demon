@@ -11,7 +11,7 @@
 				</el-form-item>
 				<el-checkbox label="记住密码" v-model="checked " name="checked "></el-checkbox>
 				<el-form-item>
-					<el-button type="primary" @click="submitForm('ruleForm')" logining>登陆</el-button>
+					<el-button type="primary" @click="submitForm('ruleForm')" :loading="loginStatu">登陆</el-button>
 					<el-button @click="resetForm('ruleForm')">重置</el-button>
 				</el-form-item>
 			</el-form>
@@ -25,12 +25,11 @@ import Base64 from '../util/Base64'
 export default {
 	data() {
 		return {
+			loginStatu:false,//登陆不是加载状态
 			checked : false,//记住密码
 			ruleForm: {
-				logining:false,//登陆状态
 				name: '',//账号
 				password:''//密码
-				
 			},
 			rules: {//规则
 				name: [{
@@ -49,7 +48,7 @@ export default {
 	created(){
 		if(Cookie.getCookie("name") && Cookie.getCookie("password")){//当cookie中有值时
 			this.checked=true;
-			this.ruleForm.name = Base64.decode(Cookie.getCookie("name"));
+			this.ruleForm.name = Base64.decode(Cookie.getCookie("name"));//解密
 			console.log(Cookie.getCookie("name"))
 			this.ruleForm.password = Base64.decode(Cookie.getCookie("password"));
 		}
@@ -57,19 +56,11 @@ export default {
 	methods: {
 		/**
 		 * 登陆
+		 * @param {string} formName表单名字 
 		 */
 		submitForm(formName) {
 			var that = this;
-			that.logining = true;//登陆状态
-			const loading = this.$loading({
-					lock: true,
-					text: 'Loading',
-					spinner: 'el-icon-loading',
-					background: 'rgba(0, 0, 0, 0.7)'
-				});
-				setTimeout(() => {
-					loading.close();
-				}, 1000);
+			that.loginStatu = true;//登陆状态
 			that.axios.get('/api/OAuth/authenticate',{
 				params:{
 					userMobile: that.ruleForm.name,
@@ -82,14 +73,14 @@ export default {
 				//console.log(222)
 				sessionStorage.setItem('userUid',res.data.profile.userUid);//存储serUserTypeId
 				sessionStorage.setItem('userName',res.data.profile.userName);//存储userName
-				that.logining = false;
+				that.loginStatu = false;
 				that.$router.push('/home' );
 				that.$message.success("登录成功");
 				that.cache();//调用cache()方法
 				
 			}).catch((err) => {
 				console.log(333)
-				that.logining = false;
+				that.loginStatu = false;
 				that.$message({
 					message: '账户密码错误',
 					type: 'error'
@@ -116,6 +107,7 @@ export default {
 		},
 		/**
 		 * 重置
+		 *  @param {string} formName表单名字 
 		 */
 		resetForm(formName) {
 			this.$refs[formName].resetFields();

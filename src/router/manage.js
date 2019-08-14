@@ -2,6 +2,7 @@ import classManage from '../views/manage/classManage.vue'
 import studentManage from '../views/manage/studentManage.vue'
 import teacherManage from '../views/manage/teacherManage.vue'
 import changePassword from '../views/manage/changePassword.vue'
+import userRole from '../views/manage/userRole.vue'
 
 export default 
 	[
@@ -24,5 +25,10 @@ export default
 			path: '/changePassword',
 			name:'changePassword',
 			component: changePassword
+		},
+		{
+			path: '/userRole',
+			name:'userRole',
+			component: userRole
 		}
 	]

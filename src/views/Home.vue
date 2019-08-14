@@ -1,7 +1,7 @@
 <template>
 	<div id="home">
 		<el-container>
-			<!-- 侧边栏 -->
+			<!-- 侧边栏  -->
 			<el-aside width="auto">
 				<el-menu
 				:default-active="$route.path"
@@ -15,18 +15,17 @@
 				router
 				text-color="#fff"
 				:default-openeds="['1','2']">
-				<!-- logo -->
-				<div>
+				<el-menu-item>
 					<img src="../assets/log.png" class="logo" />
-					<span style="color:white">智学无忧</span>
-				</div>
+					<span solt="title" style="color: white;font-size: 20px;">智学无忧</span>
+				</el-menu-item>
 					<el-submenu
 					v-for="(item,index) in modules"
 					:key="index"
 					:index="++ index+'' ">
 						<template slot="title">
 							<i class="el-icon-menu"></i>
-							<span>{{item.title}}</span>
+							<span style="font-size:16px;">{{item.title}}</span>
 						</template>
 						<el-menu-item-group>
 							<el-menu-item
@@ -38,7 +37,7 @@
 					</el-submenu>
 				</el-menu>
 			</el-aside>
-			<el-container>
+			<el-container class="content">
 				<el-header>
 					<div v-model="isCollapse" style="margin-bottom: 20px;" class="el-icon">
 						<i @click="unfold" class="el-icon-s-fold" id="ic"></i>
@@ -59,12 +58,12 @@
 							{{item.content}}
 						</el-tab-pane>
 					</el-tabs>
-					<el-dropdown>
+					<el-dropdown style="width:100px">
 						<i class="el-icon-user-solid" style="margin-right: 15px"></i>
 						<el-dropdown-menu slot="dropdown">
 							<el-dropdown-item>个人中心</el-dropdown-item>
 							<el-dropdown-item>消息</el-dropdown-item>
-							<el-dropdown-item>退出</el-dropdown-item>
+							<el-dropdown-item @click.native="handHomeout()">退出</el-dropdown-item>
 						</el-dropdown-menu>
 						<span>{{user}}</span>
 					</el-dropdown>
@@ -88,8 +87,7 @@
 				editableTabsValue: '', //定义tags标签页数据
 				editableTabs: [{ //定义新的标签数据
 					title: '首页',
-					name: '/home',
-					content: 'content'
+					name: '/home'
 				}],
 				tabIndex: 1,
 				modules: [ //动态数组数据
@@ -111,7 +109,8 @@
 							{name: "班级管理",lpath: "/classManage"},
 							{name: "学生管理",lpath: "/studentManage"},
 							{name: "老师管理",lpath: "/teacherManage"},
-							{name: "修改密码",lpath: "/changePassword"}
+							{name: "修改密码",lpath: "/changePassword"},
+							{name: "用户角色",lpath: "/userRole"}
 						]
 					}
 				]
@@ -156,8 +155,9 @@
 				this.isCollapse = !this.isCollapse
 				if (this.isCollapse) {
 					ic.style.display = "none"
+					
 					icon.style.display = "block"
-				} else {
+				 } else {
 					ic.style.display = "block"
 					icon.style.display = "none"
 				}
@@ -237,33 +237,77 @@
 				_this.editableTabs = tabs.filter(tab => tab.name !== targetName);
 				sessionStorage.setItem("editableTabs", JSON.stringify(_this.editableTabs));//缓存
 				sessionStorage.setItem("TabName", activeName); 
+			},
+			/**
+			 * 退出登录
+			 */
+			handHomeout(){
+				 var _this = this;
+				_this.$confirm("确认退出吗, 是否继续?", "提示", {
+					confirmButtonText: "确定",
+					cancelButtonText: "取消",
+					type: "warning"
+				}).then(() => {
+					sessionStorage.clear(); //清除缓存
+					_this.$router.push("/"); //重新跳转
+				}).catch(() => {
+					_this.$message({
+					type: "info",
+					message: "已取消退出"
+				});
+				});
 			}
 		}
 	}
 </script>
 
 <style scoped lang="less">
+	// #home{
+	// 	width: 100%;
+	// }
 	.el-aside{
-		display:flex;
 		background-color: rgb(255, 255, 255);
+		// height:100%;
+	}
+	.content{
+		width: 80%;
 	}
 	.el-icon i{
 		font-size: 50px;  
 	}
-	.el-menu-vertical-demo:not(.el-menu--collapse) {
+	/deep/.el-menu-vertical-demo:not(.el-menu--collapse) {
 		width: 200px;
-		min-height: 400px;
+		min-height: 625px;
+	}
+	.el-menu--collapse{
+		height: 625px;
+		width: 75px;
 	}
 	.logo {
 		height: 50px;
-		margin-right: 10px;
+		// margin-right: 10px;
+		vertical-align: middle;
+	}
+	/deep/.el-menu-item-group__title{
+		padding:0px;
 	}
 	.el-header {
+		// width: 100%;
 		display: flex;
 		justify-content: space-between;
-		margin-top: 5px;
+		 margin-top: 10px;
 	}
+	.el-tabs{
+		flex: 1;
+		width: 100%;
+	}
+	// /deep/.el-tabs__item{
+	// 	font-size: 16px;
+	// }
+	// .el-tab-pane{
+	// 	overflow: hidden;
+	// }
 	.el-dropdown {
-		font-size: 20px;
+		font-size: 18px;
 	}
 </style>
